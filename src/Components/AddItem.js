@@ -63,10 +63,10 @@ const AddItem = () => {
     return (
         <>
             <div className="w-100 d-flex flex-column justify-content-center align-items-center">
-                {itemAdded && <div class="alert alert-secondary w-100 text-center" role="alert">
+                {itemAdded && <div className="alert alert-secondary w-100 text-center" role="alert">
                     Item added ✔
                 </div>}
-                {error && <div class="alert alert-danger w-100 text-center" role="alert">
+                {error && <div className="alert alert-danger w-100 text-center" role="alert">
                     Unexpected Error Occured ❌
                 </div>}
                 <form onSubmit={handleSubmit} className="border p-3 bg-light " style={{ maxWidth: '300px' }}>
