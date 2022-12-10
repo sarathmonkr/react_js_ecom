@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react"
 import axios from "axios";
 import { Container } from "react-bootstrap";
-
+import Alert from "./Alert";
 const List = () => {
     const [itemsData, setItemsData] = useState();
+    const [cart, setCart] = useState(false);
     const [loading, setLoading] = useState(true)
     const [itemDeleted, setItemDeleted] = useState(false)
     useEffect(() => {
         const intervalId = setInterval(() => {
             setItemDeleted(false)
+            setCart(false)
         }, 4000);
         return () => {
             clearInterval(intervalId);
         };
-    }, [itemDeleted])
+    }, [itemDeleted, cart])
     useEffect(() => {
         axios.get('http://127.0.0.1:8000/api/list').then((res) => {
 
@@ -21,25 +23,27 @@ const List = () => {
                 setItemsData(null) : setItemsData(res.data.data);
             setLoading(false)
         })
-    }, [,itemDeleted]);
-    const addCart = (id) => {
-        axios.get(`http://127.0.0.1:8000/api/list/${id}`).then((res) => {
+    }, [, itemDeleted]);
 
-            console.log(res.data.message);
+    // add to cart 
+    const addCart = (id) => {
+        axios.get(`http://127.0.0.1:8000/api/addcart/${id}`).then((res) => {
+            setCart(true)
+
         })
     }
+    // delete item 
     const deleteitem = (id) => {
         axios.get(`http://127.0.0.1:8000/api/delete/${id}`).then((res) => {
             console.log(res.data.message);
-            res.data.status==200 && setItemDeleted(true) 
+            res.data.status == 200 && setItemDeleted(true)
         })
     }
-    // console.log(itemsData);
+
     return (
         <Container className="vh-100">
-            {itemDeleted && <div className="alert alert-secondary top-0 end-0 text-center position-fixed " style={{zIndex:99}} role="alert">
-                Item Deleted ✔
-            </div>}
+            {itemDeleted && <Alert message="Item Deleted ✔" />}
+            {cart && <Alert message="Item Added to Cart ✔" />}
             <div className="row">
                 {!itemsData && <div className="card py-2 text-center">
                     <p>{loading ? 'Loading...' : 'No data to show'}</p>

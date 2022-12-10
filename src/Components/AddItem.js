@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Alert from "./Alert";
 
 const AddItem = () => {
     const [selectedFile, setSelectedFile] = useState("");
@@ -63,12 +64,9 @@ const AddItem = () => {
     return (
         <>
             <div className="w-100 d-flex flex-column justify-content-center align-items-center">
-                {itemAdded && <div className="alert alert-secondary w-100 text-center" role="alert">
-                    Item added ✔
-                </div>}
-                {error && <div className="alert alert-danger w-100 text-center" role="alert">
-                    Unexpected Error Occured ❌
-                </div>}
+                {itemAdded && <Alert message="Item Added ✔" />}
+                {error && <Alert message=" Unexpected Error Occured ❌" />}
+
                 <form onSubmit={handleSubmit} className="border p-3 bg-light " style={{ maxWidth: '300px' }}>
                     <h1 className="text-center">Add Item</h1>
                     <div className="d-flex flex-column form-group" >

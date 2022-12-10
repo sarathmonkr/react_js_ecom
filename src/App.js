@@ -3,9 +3,11 @@ import './App.css';
 import  List  from './Components/List';
 import  AddItem  from './Components/AddItem';
 import  SideBar  from './Components/SideBar';
+import Cart from './Components/Cart';
+
 
 function App() {
-  return (
+    return (
     <div className="App">
       <SideBar/>
       <Routes>
@@ -13,6 +15,9 @@ function App() {
       </Routes>
       <Routes>
         <Route path='additem' element={<AddItem/>}></Route>
+      </Routes>
+      <Routes>
+        <Route path='cart' element={<Cart/>}></Route>
       </Routes>
     </div>
   );
