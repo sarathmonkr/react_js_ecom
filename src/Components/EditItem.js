@@ -1,17 +1,43 @@
 import { useEffect, useState } from "react"
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Alert from "./Alert";
+import { useNavigate } from "react-router-dom";
 
 const AddItem = () => {
-    const [selectedFile, setSelectedFile] = useState("");
-    const [name, setName] = useState("");
-    const [descr, setDescr] = useState("");
-    const [price, setPrice] = useState("");
+    const [itemsData, setItemsData] = useState({
+        "name": "",
+        "descr": "",
+        "price": "",
+        "img": ""
+    });
+    const navigate = useNavigate()
+    const [fileSelectd, setFileSelected] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(itemsData?.img);
+    const [name, setName] = useState(itemsData?.name);
+    const [descr, setDescr] = useState(itemsData?.descr);
+    const [price, setPrice] = useState(itemsData?.price);
     const [loading, setLoading] = useState(false)
     const [itemAdded, setItemAdded] = useState(false)
     const [error, setError] = useState(false)
+    const location = useLocation();
+    useEffect(() => {
+        setSelectedFile(itemsData?.img);
+        setName(itemsData?.name);
+        setDescr(itemsData?.descr);
+        setPrice(itemsData?.price);
+    },[itemsData])
+    useEffect(() => {
+        setLoading(true)
+        axios.get(`http://127.0.0.1:8000/api/list/${location.state.id}`).then((res) => {
+
+            res.data.data.length == 0 ?
+                setItemsData(null) : setItemsData(res.data.data);
+            setLoading(false)
+        })
+    }, [location.state.id]);
     useEffect(() => {
         const intervalId = setInterval(() => {
             setError(false)
@@ -27,13 +53,17 @@ const AddItem = () => {
         setLoading(true)
         event.preventDefault()
         const formData = new FormData();
+        formData.append('id', location.state.id)
         formData.append('name', name)
         formData.append('descr', descr)
         formData.append('price', price)
+       if(fileSelectd)
+       {
         formData.append('img', selectedFile)
+       }
         axios({
             method: 'post',
-            url: 'http://127.0.0.1:8000/api/add',
+            url: 'http://127.0.0.1:8000/api/update',
             data: formData
         })
             .then(function (response) {
@@ -41,8 +71,9 @@ const AddItem = () => {
                 setName('')
                 setDescr('')
                 setPrice('')
-                setLoading(false)
                 setItemAdded(true)
+                // 
+                setTimeout(()=>navigate('../'), 3000);
             })
             .catch(function (error) {
                 // window.alert('Unexpected Error Occured');
@@ -51,19 +82,17 @@ const AddItem = () => {
             });
 
     }
-
-
     const handleFileSelect = (e) => {
         setSelectedFile(e.target.files[0])
     }
     return (
         <>
-            <div className="w-100 mt-5 d-flex flex-column align-items-center" >
-                {itemAdded && <Alert message="Item Added ✔" />}
+            <div className="w-100 d-flex flex-column justify-content-center align-items-center">
+                {itemAdded && <Alert message="Item Updated Successfuly ✔" />}
                 {error && <Alert message=" Unexpected Error Occured ❌" />}
 
                 <form onSubmit={handleSubmit} className="border p-3 bg-light " style={{ maxWidth: '300px' }}>
-                    <h1 className="text-center pb-2">Add Item</h1>
+                    <h1 className="text-center">Add Item</h1>
                     <div className="d-flex flex-column form-group" >
                         <label >Title</label>
                         <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }} />

@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 
 const SideBar = () => {
-    
     return (
             <div className='bg-primary'>
             
@@ -12,6 +11,5 @@ const SideBar = () => {
                 </ul>
             </div>
     )
-
 }
 export default SideBar;
