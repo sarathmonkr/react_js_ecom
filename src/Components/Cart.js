@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 const Cart = () => {
     const [itemsData, setItemsData] = useState();
+    const [isData, setIsData] = useState(false);
     const [loading, setLoading] = useState(true);
     const [cart, setCart] = useState(false);
 
@@ -32,12 +33,16 @@ const Cart = () => {
             <div>
                 <h3>Cart</h3>
             </div>
+            {!itemsData && <div className="card py-2 text-center">
+                    <p>{loading ? 'Loading...' : 'No data to show'}</p>
+                </div>}
             <div className="d-flex justify-content-end">
-                <button className="btn btn-primary">Buy Now</button>
+               {isData? <button className="btn btn-primary">Buy Now</button> : <h6 className="text-center"> {!loading && 'No Products added to cart'}</h6>}
             </div>
             <div>
                 {itemsData?.map((item,index) => {
                     if (item.status > 0) {
+                        !isData && setIsData(true)
                         return (
                             <div className="card d-flex flex-row p-1 m-2" key={index}>
                                 <div>
